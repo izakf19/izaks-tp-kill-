@@ -1,0 +1,113 @@
+local player = game.Players.LocalPlayer
+local rootPart = nil
+ 
+-- Function to get the character's root part
+local function getRootPart()
+    local character = player.Character or player.CharacterAdded:Wait()
+    return character:WaitForChild("HumanoidRootPart")
+end
+ 
+-- Initial root part setup
+rootPart = getRootPart()
+ 
+-- Detect character respawn and update rootPart
+player.CharacterAdded:Connect(function(character)
+    task.wait(1) -- Small delay to ensure character loads
+    rootPart = character:WaitForChild("HumanoidRootPart")
+end)
+ 
+-- GUI Creation
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.CoreGui
+ 
+-- Main Frame (Draggable)
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 180, 0, 120)
+frame.Position = UDim2.new(0.5, -90, 0.2, 0)
+frame.BackgroundColor3 = Color3.fromRGB(75, 0, 130) -- Dark purple
+frame.BackgroundTransparency = 0.2 -- Slightly transparent
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true -- Makes the UI draggable
+frame.Parent = screenGui
+ 
+-- UI Corner (Rounded Edges)
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 10)
+uiCorner.Parent = frame
+ 
+-- Title Label
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0.3, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Izaks Kill"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = frame
+ 
+-- Teleport Button
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0.8, 0, 0.4, 0)
+button.Position = UDim2.new(0.1, 0, 0.5, 0)
+button.BackgroundColor3 = Color3.fromRGB(138, 43, 226) -- Bright purple
+button.BackgroundTransparency = 0.2 -- Slightly transparent
+button.Text = "Teleport"
+button.TextColor3 = Color3.new(1, 1, 1)
+button.TextScaled = true
+button.Font = Enum.Font.GothamBold
+button.Parent = frame
+ 
+-- UI Corner for Button (Rounded Edges)
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 8)
+buttonCorner.Parent = button
+ 
+-- Button Effects
+button.MouseEnter:Connect(function()
+    button.BackgroundTransparency = 0.1
+end)
+button.MouseLeave:Connect(function()
+    button.BackgroundTransparency = 0.2
+end)
+button.MouseButton1Down:Connect(function()
+    button.BackgroundTransparency = 0.3
+end)
+button.MouseButton1Up:Connect(function()
+    button.BackgroundTransparency = 0.1
+end)
+ 
+-- Teleport Function
+local function teleport()
+    if not rootPart then
+        warn("Root part not found! Waiting for character...")
+        rootPart = getRootPart()
+    end
+ 
+    local originalPosition = rootPart.Position
+    print("Saved Position: ", originalPosition)
+ 
+    local platform = Instance.new("Part")
+    platform.Size = Vector3.new(10, 1, 10)
+    platform.Position = Vector3.new(4230, -6.4, 60)
+    platform.Anchored = true
+    platform.Transparency = 1
+    platform.BrickColor = BrickColor.new("Bright yellow")
+    platform.Parent = game.Workspace
+ 
+    task.wait(0.5)
+ 
+    rootPart.CFrame = CFrame.new(4230, -2.9, 60)
+    print("Teleported to platform!")
+ 
+    task.wait(3)
+ 
+    rootPart.CFrame = CFrame.new(originalPosition)
+    print("Teleported back to: ", originalPosition)
+ 
+    task.wait(1)
+    platform:Destroy()
+end
+ 
+button.MouseButton1Click:Connect(teleport)
