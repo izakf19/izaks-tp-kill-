@@ -4,7 +4,7 @@ local rootPart = nil
 -- Function to get the character's root part
 local function getRootPart()
     local character = player.Character or player.CharacterAdded:Wait()
-    return character:WaitForChild("HumanoidRootPart")
+    retu("HumanoidRootPart")
 end
  
 -- Initial root part setup
